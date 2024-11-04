@@ -1,0 +1,8 @@
+[dd]
+10.241.216.52
+
+[dd:vars]
+ansible_port = 22
+ansible_user = sysadmin
+ansible_ssh_pass = 'Password123!'
+

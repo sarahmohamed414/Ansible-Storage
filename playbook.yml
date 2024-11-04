@@ -1,0 +1,65 @@
+- name: Data Domain NFS Configuration Playbook
+  hosts: dd
+  connection: local
+  gather_facts: false
+  collections:
+    - dellemc.datadomain
+  vars_prompt:
+    - name: share_name
+      prompt: "Please enter the CIFS share name"
+      private: no     
+  vars:
+    share_path: /backup
+
+  tasks:
+    - name: Get CIFS status
+      dellemc.datadomain.cifs:
+        state: status
+      register: cifs_status  
+
+    - name: Display CIFS status
+      debug:
+        msg: "{{ cifs_status }}"
+
+    - name: Check if the share already exists
+      dellemc.datadomain.cifs:
+        state: status
+        share: "{{ share_name }}"
+      register: share_check
+      ignore_errors: yes  # ignr if it doesn't existtt
+
+    - name: Start the block of tasks
+      block:
+        - name: Create CIFS Share
+          dellemc.datadomain.cifs:
+            state: create
+            share: "{{ share_name }}"
+            path: "{{ share_path }}"
+            clients: '*'
+          register: create_result
+          when: share_check is failed  
+
+        - name: Debug create_result
+          debug:
+            var: create_result
+
+        - name: Print CIFS Share Creation Result
+          debug:
+            msg: >
+              {% if create_result is defined and create_result.changed is defined %}
+              The CIFS share '{{ share_name }}' was attempted to be created at '{{ share_path }}'.
+              Status: {{ 'Successfully created' if create_result.changed else 'Already exists or failed' }}.
+              {% else %}
+              The CIFS share creation task did not return the expected result.
+              {% endif %}
+
+      rescue:
+        - name: Handle CIFS share creation failure
+          debug:
+            msg: "Failed to create the CIFS share '{{ share_name }}'. Error details: {{ create_result }}"
+
+      always:
+        - name: Always run this task
+          debug:
+            msg: "CIFS share creation process completed. Please check the above messages for details."
+
