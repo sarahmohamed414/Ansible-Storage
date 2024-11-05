@@ -1,0 +1,10 @@
+- name: Check if the share exists
+  dellemc.datadomain.cifs:
+    state: show  
+    share: "{{ share_name }}"
+  register: share_check
+  ignore_errors: true
+
+- name: Show output of share_check
+  debug:
+    var: share_check

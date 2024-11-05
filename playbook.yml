@@ -8,6 +8,9 @@
     - name: share_name
       prompt: "Please enter the CIFS share name"
       private: no     
+    - name: delete_share_name
+      prompt: "Please enter the CIFS share name to delete"
+      private: no
   roles:
     - cifs_share_management  # Role for managing CIFS shares
 

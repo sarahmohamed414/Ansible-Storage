@@ -1,0 +1,27 @@
+
+- name: Check if CIFS share exists
+  dellemc.datadomain.cifs:
+    state: show
+    share: "{{ delete_share_name }}"
+  register: share_check
+  ignore_errors: true
+
+
+- name: Delete specified CIFS share if it exists
+  dellemc.datadomain.cifs:
+    state: destroy
+    share: "{{ delete_share_name }}"
+  when: share_check is defined and not share_check.failed
+  register: delete_result
+
+- name: Show deletion result
+  debug:
+    msg: >
+      {% if delete_result is defined and delete_result.changed %}
+      The CIFS share '{{ delete_share_name }}' has been successfully deleted.
+      {% elif share_check is defined and share_check.failed %}
+      No changes were made. The CIFS share '{{ delete_share_name }}' does not exist.
+      {% else %}
+      No changes were made. The CIFS share '{{ delete_share_name }}' may already be deleted.
+      {% endif %}
+
