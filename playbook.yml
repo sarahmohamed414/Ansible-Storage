@@ -21,27 +21,27 @@
       debug:
         msg: "{{ cifs_status }}"
 
-    - name: Check if the share already exists
+    - name: Check if the share exists
       dellemc.datadomain.cifs:
-        state: status
+        state: show  
         share: "{{ share_name }}"
       register: share_check
-      ignore_errors: true  # ignore it doesnt existtt
+      ignore_errors: true  #ignr errors if it doesnt exist
 
     - name: Show output of share_check
       debug:
-          var: share_check
+        var: share_check
 
     - name: Start the block of tasks
       block:
         - name: Create CIFS Share
           dellemc.datadomain.cifs:
-            state: create
+            state: create  
             share: "{{ share_name }}"
             path: "{{ share_path }}"
             clients: '*'
           register: create_result
-          when: share_check.failed
+          when: share_check.failed  # Only create if share_check failed
 
         - name: Debug create_result
           debug:
