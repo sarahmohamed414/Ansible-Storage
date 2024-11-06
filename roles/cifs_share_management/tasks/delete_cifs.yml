@@ -1,4 +1,4 @@
-
+---
 - name: Check if CIFS share exists
   dellemc.datadomain.cifs:
     state: show
@@ -15,7 +15,7 @@
   register: delete_result
 
 - name: Show deletion result
-  debug:
+  ansible.legacy.debug:
     msg: >
       {% if delete_result is defined and delete_result.changed %}
       The CIFS share '{{ delete_share_name }}' has been successfully deleted.
@@ -24,4 +24,3 @@
       {% else %}
       No changes were made. The CIFS share '{{ delete_share_name }}' may already be deleted.
       {% endif %}
-

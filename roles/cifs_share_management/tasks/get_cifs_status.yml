@@ -4,5 +4,5 @@
   register: cifs_status
 
 - name: Display CIFS status
-  debug:
+  ansible.legacy.debug:
     msg: "{{ cifs_status }}"

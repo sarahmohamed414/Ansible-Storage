@@ -1,5 +1,12 @@
+---
+- name: Import tasks to get CIFS status
+  ansible.builtin.import_tasks: get_cifs_status.yml
 
-- import_tasks: get_cifs_status.yml
-- import_tasks: check_share_exists.yml
-- import_tasks: create_cifs_share.yml
-- import_tasks: delete_cifs.yml
+- name: Import tasks to check if share exists
+  ansible.builtin.import_tasks: check_share_exists.yml
+
+- name: Import tasks to create CIFS share
+  ansible.builtin.import_tasks: create_cifs_share.yml
+
+- name: Import tasks to delete CIFS share
+  ansible.builtin.import_tasks: delete_cifs.yml
