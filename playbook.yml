@@ -2,12 +2,26 @@
   hosts: dd
   connection: local
   gather_facts: false
+
   vars_prompt:
+    - name: user_input
+      prompt: |
+        Please select an action:
+        1. Get CIFS status
+        2. Check if a share exists
+        3. Create a CIFS share
+        4. Delete a CIFS share
+      private: no
+
     - name: share_name
-      prompt: "Please enter the CIFS share name"
-      private: false
+      prompt: "Please enter the CIFS share name to create"
+      private: no
+      default: ""  # Set a default value to handle unused prompts
+
     - name: delete_share_name
       prompt: "Please enter the CIFS share name to delete"
-      private: false
+      private: no
+      default: ""  # Set a default value to handle unused prompts
+
   roles:
-    - cifs_share_management # Role for managing CIFS shares
+    - cifs_share_management
