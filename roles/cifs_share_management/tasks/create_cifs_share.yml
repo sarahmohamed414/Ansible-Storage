@@ -1,10 +1,10 @@
 ---
 - name: Check if CIFS share exists
   dellemc.datadomain.cifs:
-    state: present  # Check for existence, do not create
+    state: present
     share: "{{ share_name }}"
   register: share_check
-  ignore_errors: yes  # Allow continuation even if the share doesn't exist
+  ignore_errors: false
 
 - name: Start the block of tasks
   block:
@@ -15,7 +15,7 @@
         path: "{{ share_path }}"
         clients: '*'
       register: create_result
-      when: share_check is failed  # Run only if the share does not exist
+      when: share_check is failed
 
     - name: Debug create_result
       ansible.builtin.debug:

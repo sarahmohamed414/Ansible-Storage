@@ -11,16 +11,16 @@
         2. Check if a share exists
         3. Create a CIFS share
         4. Delete a CIFS share
-      private: no
+      private: false
 
     - name: share_name
       prompt: "Please enter the CIFS share name to create"
-      private: no
+      private: false
       default: ""  # Set a default value to handle unused prompts
 
     - name: delete_share_name
       prompt: "Please enter the CIFS share name to delete"
-      private: no
+      private: false
       default: ""  # Set a default value to handle unused prompts
 
   roles:
