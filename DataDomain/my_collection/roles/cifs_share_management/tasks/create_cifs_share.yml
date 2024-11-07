@@ -1,0 +1,45 @@
+---
+- name: Check if CIFS share exists
+  dellemc.datadomain.cifs:
+    state: present
+    share: "{{ share_name }}"
+  register: share_check
+  ignore_errors: false
+
+- name: Start the block of tasks
+  block:
+    - name: Create CIFS Share
+      dellemc.datadomain.cifs:
+        state: create
+        share: "{{ share_name }}"
+        path: "{{ share_path }}"
+        clients: '*'
+      register: create_result
+      when: share_check is failed
+
+    - name: Debug create_result
+      ansible.builtin.debug:
+        var: create_result
+
+    - name: Print CIFS Share Creation Result
+      ansible.builtin.debug:
+        msg: >
+          {% if create_result is defined and create_result.changed %}
+          The CIFS share '{{ share_name }}' was successfully created at '{{ share_path }}'.
+          {% elif create_result is defined and not create_result.changed %}
+          The CIFS share '{{ share_name }}' already exists at '{{ share_path }}'.
+          {% elif create_result is failed %}
+          Failed to create the CIFS share '{{ share_name }}'. Please check the logs for more details.
+          {% else %}
+          CIFS share creation did not return an expected result.
+          {% endif %}
+
+  rescue:
+    - name: Handle CIFS share creation failure
+      ansible.builtin.debug:
+        msg: "Failed to create the CIFS share '{{ share_name }}'. Error details: {{ create_result }}"
+
+  always:
+    - name: Always run this task
+      ansible.builtin.debug:
+        msg: "CIFS share creation process completed. Please check the above messages for details."

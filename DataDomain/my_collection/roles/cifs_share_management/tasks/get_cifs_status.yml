@@ -1,0 +1,8 @@
+- name: Get CIFS status
+  dellemc.datadomain.cifs:
+    state: status
+  register: cifs_status
+
+- name: Display CIFS status
+  ansible.legacy.debug:
+    msg: "{{ cifs_status }}"

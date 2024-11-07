@@ -1,0 +1,16 @@
+---
+- name: Import tasks to get CIFS status
+  ansible.builtin.import_tasks: get_cifs_status.yml
+  when: user_input == "1"
+
+- name: Import tasks to check if share exists
+  ansible.builtin.import_tasks: check_share_exists.yml
+  when: user_input == "2"
+
+- name: Import tasks to create CIFS share
+  ansible.builtin.import_tasks: create_cifs_share.yml
+  when: user_input == "3" and share_name | length > 0
+
+- name: Import tasks to delete CIFS share
+  ansible.builtin.import_tasks: delete_cifs.yml
+  when: user_input == "4" and delete_share_name | length > 0
